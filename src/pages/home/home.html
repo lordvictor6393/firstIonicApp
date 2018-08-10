@@ -7,27 +7,36 @@
 </ion-header>
 
 <ion-content padding>
-  <form (ngSubmit)="registerPrayReminder()">
+  <form [formGroup]="prayNotificationForm" (ngSubmit)="registerPrayReminders()">
     <ion-list>
       <ion-item>
-        <ion-label floating>Title</ion-label>
-        <ion-input type="text" [(ngModel)]="data.title" name="title"></ion-input>
+        <ion-label floating>Texto</ion-label>
+        <ion-input type="text" formControlName="description"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label floating>Description</ion-label>
-        <ion-input type="text" [(ngModel)]="data.description" name="description"></ion-input>
+        <ion-label floating>Hora de la PRIMERA Notificación</ion-label>
+        <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" formControlName="firstTime"></ion-datetime>
       </ion-item>
       <ion-item>
-        <ion-label floating>Date</ion-label>
-        <ion-datetime displayFormat="DD/MM/YY" pickerFormat="D MMMM YYYY" [(ngModel)]="data.date" name="date"></ion-datetime>
+        <ion-label floating>Hora de la SEGUNDA Notificación</ion-label>
+        <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" formControlName="secondTime"></ion-datetime>
       </ion-item>
       <ion-item>
-        <ion-label floating>Time</ion-label>
-        <ion-datetime displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="data.time" name="time"></ion-datetime>
+        <ion-label floating>Hora de la TERCERA Notificación</ion-label>
+        <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" formControlName="thirdTime"></ion-datetime>
       </ion-item>
+      <!-- <ion-item>
+        Sonido
+        <button ion-button (click)="openSoundPicker()" type="button">
+          Seleccionar Sonido
+        </button>
+      </ion-item> -->
     </ion-list>
     <div padding>
-      <button ion-button full round>Add Notification</button>
+      <button ion-button full round>Listo!</button>
+    </div>
+    <div padding>
+      <button ion-button full round color="danger" type="button" (click)="disablePrayNotifications()">Desactivar Notificationes</button>
     </div>
   </form>
 </ion-content>
