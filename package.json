@@ -20,6 +20,7 @@
     "@angular/http": "5.2.11",
     "@angular/platform-browser": "5.2.11",
     "@angular/platform-browser-dynamic": "5.2.11",
+    "@ionic-native/app-preferences": "^4.11.0",
     "@ionic-native/core": "~4.11.0",
     "@ionic-native/file-chooser": "^4.11.0",
     "@ionic-native/local-notifications": "^4.11.0",
@@ -27,8 +28,9 @@
     "@ionic-native/status-bar": "~4.11.0",
     "@ionic/storage": "2.1.3",
     "cordova-android": "7.0.0",
+    "cordova-plugin-app-preferences": "git+https://github.com/vash15/me.apla.cordova.app-preferences.git",
     "cordova-plugin-badge": "^0.8.7",
-    "cordova-plugin-device": "2.0.2",
+    "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-filechooser": "^1.0.1",
     "cordova-plugin-ionic-keyboard": "^2.1.2",
     "cordova-plugin-ionic-webview": "^2.0.2",
@@ -54,7 +56,8 @@
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-filechooser": {}
+      "cordova-plugin-filechooser": {},
+      "cordova-plugin-app-preferences": {}
     },
     "platforms": [
       "android"

@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+
 import { NavController, AlertController, Platform } from 'ionic-angular';
-import { LocalNotifications } from '@ionic-native/local-notifications';
 import { FileChooser } from "@ionic-native/file-chooser";
-import { FormGroup, FormControl } from '../../../node_modules/@angular/forms';
+import { AppPreferences } from '@ionic-native/app-preferences';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 
 @Component({
   selector: 'page-home',
@@ -13,33 +15,81 @@ export class HomePage {
   prayNotificationForm: FormGroup;
   sound = 'file://assets/sounds/message_tone.mp3';
 
+  count: number;
+  repeat = [
+    'minute',
+    'hour',
+    'day',
+    'week',
+    'month',
+    'quarter',
+    'year'
+  ];
+  repeatTime: string;
+  repeatInterval: string;
+
+  minute: number;
+  hour: number;
+  day: number;
+  weekday: number;
+  weekdayOrdinal: number;
+  week: number;
+  weekOfMonth: number;
+  month: number;
+  quarter: number;
+  year: number; 
+
+  matchTime: string;
+
   constructor(public navCtrl: NavController,
     public localNotifications: LocalNotifications,
     public fileChooser: FileChooser,
+    private appPreferences: AppPreferences,
     public alertCtrl: AlertController,
     public platform: Platform) {
     this.prayNotificationForm = new FormGroup({
       description: new FormControl(null),
+      firstEnabled: new FormControl(null),
       firstTime: new FormControl(null),
+      secondEnabled: new FormControl(null),
       secondTime: new FormControl(null),
+      thirdEnabled: new FormControl(null),
       thirdTime: new FormControl(null)
     });
+
+    let firstNotificationTime = this.appPreferences.fetch('maranatha', 'firstNotificationTime');
+    let secondNotificationTime = this.appPreferences.fetch('maranatha', 'secondNotificationTime');
+    let thirdNotificationTime = this.appPreferences.fetch('maranatha', 'thirdNotificationTime');
+
     this.prayNotificationForm.patchValue({
       description: 'Llego el tiempo de oración!',
-      firstTime: '08:00',
-      secondTime: '13:30',
-      thirdTime: '21:00'
+      firstEnabled: !!firstNotificationTime,
+      firstTime: firstNotificationTime || '08:00',
+      secondEnabled: !!secondNotificationTime,
+      secondTime: secondNotificationTime || '13:30',
+      thirdEnabled: !!thirdNotificationTime,
+      thirdTime: thirdNotificationTime || '21:00'
     });
+
+    // this.prayNotificationForm.patchValue({
+    //   description: 'Llego el tiempo de oración!',
+    //   firstEnabled: true,
+    //   firstTime: '08:00',
+    //   secondEnabled: true,
+    //   secondTime: '13:30',
+    //   thirdEnabled: true,
+    //   thirdTime: '21:00'
+    // });
   }
 
-  openSoundPicker() {
-    this.fileChooser.open()
-      .then(uri => {
-        console.log(uri);
-        this.sound = uri;
-      })
-      .catch(console.warn);
-  }
+  // openSoundPicker() {
+  //   this.fileChooser.open()
+  //     .then(uri => {
+  //       console.log(uri);
+  //       this.sound = uri;
+  //     })
+  //     .catch(console.warn);
+  // }
 
   getNotificationDate(notTime: string) {
     let baseDate = new Date();
@@ -54,14 +104,14 @@ export class HomePage {
     return baseDate;
   }
 
-  getNotificationConfig(id: number, text: string, trigger: Date) {
+  getNotificationConfig(id: number, text: string, time: string) {
     return {
       id: id,
       title: 'Maranatha App',
       text: text,
-      sound: this.sound,
       trigger: {
-        at: trigger
+        count: 365,
+        every: { hour: +time.split(':')[0], minute: +time.split(':')[1]}
       }
     }
   }
@@ -69,41 +119,28 @@ export class HomePage {
   registerPrayReminders() {
     const data = this.prayNotificationForm.value;
     let notifications = [];
-    let firstDate: Date;
-    let secondDate: Date;
-    let thirdDate: Date;
 
-    if (data.firstTime) {
-      firstDate = this.getNotificationDate(data.firstTime);
-      notifications.push(this.getNotificationConfig(1, data.description, firstDate))
+    if (data.firstEnabled) {
+      notifications.push(this.getNotificationConfig(1, data.description, data.firstTime));
+      this.appPreferences.store('maranatha', 'firstNotificationTime', data.firstTime);
+    } else {
+      this.localNotifications.cancel(1);
+      this.appPreferences.remove('maranatha', 'firstNotificationTime');
     }
-    if (data.secondTime) {
-      secondDate = this.getNotificationDate(data.secondTime);
-      notifications.push(this.getNotificationConfig(2, data.description, secondDate))
+    if (data.secondEnabled) {
+      notifications.push(this.getNotificationConfig(2, data.description, data.secondTime));
+      this.appPreferences.store('maranatha', 'secondNotificationTime', data.secondTime);
+    } else {
+      this.localNotifications.cancel(2);
+      this.appPreferences.remove('maranatha', 'secondNotificationTime');
     }
-    if (data.thirdTime) {
-      thirdDate = this.getNotificationDate(data.thirdTime);
-      notifications.push(this.getNotificationConfig(3, data.description, thirdDate))
+    if (data.thirdEnabled) {
+      notifications.push(this.getNotificationConfig(3, data.description, data.thirdTime));
+      this.appPreferences.store('maranatha', 'thirdNotificationTime', data.thirdTime);
+    } else {
+      this.localNotifications.cancel(3);
+      this.appPreferences.remove('maranatha', 'thirdNotificationTime');
     }
-
-    // notifications.push({
-    //   id: 4,
-    //   title: 'test',
-    //   text: 'this is a test notification that runs\nevery minute.',
-    //   trigger: {
-    //     every: 'minute',
-    //     firstAt: this.getNotificationDate('18:45')
-    //   }
-    // });
-
-    // notifications.push({
-    //   id: 4,
-    //   title: 'test',
-    //   text: 'this is a test notification that runs\nevery minute.',
-    //   trigger: {
-    //     every: { 'hour': 18, 'minute': 17 }
-    //   }
-    // });
 
     this.localNotifications.schedule(notifications);
 
@@ -115,13 +152,60 @@ export class HomePage {
     alert.present();
   }
 
-  disablePrayNotifications() {
-    this.localNotifications.cancelAll();
-    let alert = this.alertCtrl.create({
-      title: 'Aviso',
-      subTitle: 'Las notificaciones fueron desactivadas.',
-      buttons: ['OK']
+  // disablePrayNotifications() {
+  //   this.localNotifications.cancelAll();
+  //   let alert = this.alertCtrl.create({
+  //     title: 'Aviso',
+  //     subTitle: 'Las notificaciones fueron desactivadas.',
+  //     buttons: ['OK']
+  //   });
+  //   alert.present();
+  // }
+
+  addRepeatNotification() {
+    let config = [];
+    let trig = {
+      every: this.repeatInterval
+    };
+    if(this.count) trig['count'] = +this.count;
+    if(this.repeatTime) trig['firstAt'] = this.getNotificationDate(this.repeatTime);
+    config.push({
+      id: 10,
+      title: 'test repeat notification',
+      trigger: trig
     });
-    alert.present();
+    this.localNotifications.schedule(config);
+    console.log('repeat config: ', config);
+  }
+
+  buildScheduleObject() {
+    let obj = {};
+    if(this.minute) { obj['minute'] = +this.minute;  }
+    if(this.hour) { obj['hour'] = +this.hour;  }
+    if(this.day) { obj['day'] = +this.day;  }
+    if(this.weekday) { obj['weekday'] = +this.weekday;  }
+    if(this.weekdayOrdinal) { obj['weekdayOrdinal'] = +this.weekdayOrdinal;  }
+    if(this.week) { obj['week'] = +this.week;  }
+    if(this.weekOfMonth) { obj['weekOfMonth'] = +this.weekOfMonth;  }
+    if(this.month) { obj['month'] = +this.month;  }
+    if(this.quarter) { obj['quarter'] = +this.quarter;  }
+    if(this.year) { obj['year'] = +this.year;  }
+    return obj;
+  }
+
+  addMatchNotification() {
+    let config = [];
+    let trig = {
+      every: this.buildScheduleObject()
+    };
+    if(this.count) trig['count'] = +this.count;
+    if(this.matchTime) trig['firstAt'] = this.getNotificationDate(this.matchTime);
+    config.push({
+      id: 11,
+      title: 'test match notification',
+      trigger: trig
+    });
+    this.localNotifications.schedule(config);
+    console.log('match config: ', config);
   }
 }

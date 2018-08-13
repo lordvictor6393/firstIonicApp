@@ -8,6 +8,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { FileChooser } from '@ionic-native/file-chooser';
+import { AppPreferences } from "@ionic-native/app-preferences";
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { FileChooser } from '@ionic-native/file-chooser';
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     LocalNotifications,
-    FileChooser
+    FileChooser,
+    AppPreferences
   ]
 })
 export class AppModule { }

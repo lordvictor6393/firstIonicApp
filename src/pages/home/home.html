@@ -13,30 +13,114 @@
         <ion-label floating>Texto</ion-label>
         <ion-input type="text" formControlName="description"></ion-input>
       </ion-item>
+    </ion-list>
+    <ion-list>
+      <ion-item-divider>
+      <!-- <ion-list-header> -->
+        <ion-icon name="sunny" item-left></ion-icon>
+        <ion-label> Primera Notificación </ion-label>
+        <ion-toggle formControlName="firstEnabled"></ion-toggle>
+      <!-- </ion-list-header> -->
+      </ion-item-divider>
       <ion-item>
-        <ion-label floating>Hora de la PRIMERA Notificación</ion-label>
-        <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" formControlName="firstTime"></ion-datetime>
+        <ion-label fixed>Hora</ion-label>
+        <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" formControlName="firstTime" [disabled]="!prayNotificationForm.get('firstEnabled').value"></ion-datetime>
       </ion-item>
+    </ion-list>
+    <ion-list>
+      <ion-item-divider>
+      <!-- <ion-list-header> -->
+        <ion-icon name="partly-sunny" item-left></ion-icon>
+        <ion-label> Segunda Notificación </ion-label>
+        <ion-toggle formControlName="secondEnabled"></ion-toggle>
+      <!-- </ion-list-header> -->
+      </ion-item-divider>
       <ion-item>
-        <ion-label floating>Hora de la SEGUNDA Notificación</ion-label>
-        <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" formControlName="secondTime"></ion-datetime>
+        <ion-label fixed>Hora</ion-label>
+        <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" formControlName="secondTime" [disabled]="!prayNotificationForm.get('secondEnabled').value"></ion-datetime>
       </ion-item>
+    </ion-list>
+    <ion-list>
+      <ion-item-divider>
+      <!-- <ion-list-header> -->
+        <ion-icon name="cloudy-night" item-left></ion-icon>
+        <ion-label> Tercera Notificación </ion-label>
+        <ion-toggle formControlName="thirdEnabled"></ion-toggle>
+      <!-- </ion-list-header> -->
+      </ion-item-divider>
       <ion-item>
-        <ion-label floating>Hora de la TERCERA Notificación</ion-label>
-        <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" formControlName="thirdTime"></ion-datetime>
+        <ion-label fixed>Hora</ion-label>
+        <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" formControlName="thirdTime" [disabled]="!prayNotificationForm.get('thirdEnabled').value"></ion-datetime>
       </ion-item>
-      <!-- <ion-item>
+    </ion-list>
+    <!-- <ion-item>
         Sonido
         <button ion-button (click)="openSoundPicker()" type="button">
           Seleccionar Sonido
         </button>
       </ion-item> -->
-    </ion-list>
-    <div padding>
+    <div>
       <button ion-button full round>Listo!</button>
     </div>
-    <div padding>
-      <button ion-button full round color="danger" type="button" (click)="disablePrayNotifications()">Desactivar Notificationes</button>
-    </div>
   </form>
+  <!-- <ion-item>
+    <ion-label floating>Count</ion-label>
+    <ion-input type="number" [(ngModel)]="count"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label>Repeat Notification</ion-label>
+    <ion-select [(ngModel)]="repeatInterval">
+      <ion-option *ngFor="let r of repeat" value="{{r}}">{{r}}</ion-option>
+    </ion-select>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>First At</ion-label>
+    <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" [(ngModel)]="repeatTime"></ion-datetime>
+  </ion-item>
+  <button ion-button (click)="addRepeatNotification()">schedule repeat notification</button>
+  <ion-item>
+    <ion-label floating>minute</ion-label>
+    <ion-input type="number" [(ngModel)]="minute"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>hour</ion-label>
+    <ion-input type="number" [(ngModel)]="hour"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>day</ion-label>
+    <ion-input type="number" [(ngModel)]="day"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>weekday</ion-label>
+    <ion-input type="number" [(ngModel)]="weekday"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>weekdayOrdinal</ion-label>
+    <ion-input type="number" [(ngModel)]="weekdayOrdinal"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>week</ion-label>
+    <ion-input type="number" [(ngModel)]="week"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>weekOfMonth</ion-label>
+    <ion-input type="number" [(ngModel)]="weekOfMonth"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>month</ion-label>
+    <ion-input type="number" [(ngModel)]="month"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>quarter</ion-label>
+    <ion-input type="number" [(ngModel)]="quarter"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>year</ion-label>
+    <ion-input type="number" [(ngModel)]="year"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>First At</ion-label>
+    <ion-datetime displayFormat="h:mm a" pickerFormat="hh:mm A" [(ngModel)]="matchTime"></ion-datetime>
+  </ion-item>
+  <button ion-button (click)="addMatchNotification()">schedule match notification</button> -->
 </ion-content>
